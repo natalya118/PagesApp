@@ -1,0 +1,95 @@
+
+<button class="btn btn-primary" type="button" *ngIf="pages">
+   <i class="fa fa-calendar" aria-hidden="true"></i> Pages  
+   <span class="badge">{{totalItems}}</span>
+</button>
+
+<hr/>
+
+<div  @flyInOut="'in'">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><i class="fa fa-text-width fa-2x" aria-hidden="true"></i>Title</th>
+                <th><i class="fa fa-user fa-2x" aria-hidden="true"></i>Creator</th>
+                <th><i class="fa fa-paragraph fa-2x" aria-hidden="true"></i>Description</th>
+                <th><i class="fa fa-map-marker fa-2x" aria-hidden="true"></i></th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Time Start</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Time End</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let page of pages">
+                <td> {{page.title}}</td>
+                <td>{{page.creator}}</td>
+                <td>{{page.description}}</td>
+                <td>{{page.location}}</td>
+                <td>{{page.timeStart | dateFormat | date:'medium'}}</td>
+                <td>{{page.timeEnd | dateFormat | date:'medium'}}</td>
+                <td><button class="btn btn-primary" (click)="viewPageDetails(page.id)">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>Details</button>
+                </td>
+                <td><a class="btn btn-primary" [routerLink]="['/pages',page.id,'edit']"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</a></td>
+                <td>
+                    <button class="btn btn-danger" (click)="removePage(page)"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [(ngModel)]="currentPage" class="pagination-sm"
+        previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" (pageChanged)="pageChanged($event)"></pagination>
+</div>
+<modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="closed()" (onDismiss)="dismissed()"
+    (onOpen)="opened()" #modal>
+    <modal-header [show-close]="true">
+        <h4 class="modal-title" *ngIf="selectedPageLoaded">{{pageDetails.title}} details</h4>
+    </modal-header>
+    <modal-body *ngIf="selectedPageLoaded">
+        <form ngNoForm method="post">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Url Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="pageDetails.urlName" disabled />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label"><i class="fa fa-text-width" aria-hidden="true"></i>Title</label>
+                        <input type="text" class="form-control" [(ngModel)]="pageDetails.title" disabled />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label"><i class="fa fa-paragraph" aria-hidden="true"></i>Description</label>
+                        <input type="text" class="form-control" [(ngModel)]="pageDetails.description" disabled />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <label class="control-label"><i class="fa fa-calendar-o" aria-hidden="true"></i>Added Date</label>
+                        <input type="text" class="form-control" [(ngModel)]="pageDetails.addedDate" disabled />
+                    </div>
+
+                    <div class="col-xs-6">
+                        <label class="control-label"><i class="fa fa-paragraph" aria-hidden="true"></i>Content</label>
+                        <input type="text" class="form-control" [(ngModel)]="pageDetails.content" disabled />
+                    </div>
+                </div>
+            </div>
+
+    
+            <hr/>
+
+        </form>
+    </modal-body>
+    <modal-footer [show-default-buttons]="false">
+        <button class="btn btn-danger btn-sm pull-right" (click)="modal.close()">
+            <i class="fa fa-times" aria-hidden="true"></i>Dismiss</button>
+    </modal-footer>
+</modal>
